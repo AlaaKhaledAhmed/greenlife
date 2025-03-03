@@ -1,0 +1,2 @@
+/Users/alaakhaled/Downloads/greenlife/android/app/.cxx/Debug/2g6w4m6v/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/alaakhaled/Downloads/greenlife/android/app/.cxx/Debug/2g6w4m6v/arm64-v8a/CMakeFiles/rebuild_cache.dir
