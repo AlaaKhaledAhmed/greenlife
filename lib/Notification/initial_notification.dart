@@ -55,6 +55,7 @@ class LocalNotificationServices {
       // تحديد الوقت الأولي للإشعار بناءً على المدخلات من المستخدم
       NotificationCalendar notificationCalendar = NotificationCalendar(
         preciseAlarm: true, // تحديد وقت دقيق للإشعار
+        allowWhileIdle: true,
         hour: notificationTime.hour,
         minute: notificationTime.minute,
         day: notificationTime.day,
@@ -92,6 +93,7 @@ class LocalNotificationServices {
 
         NotificationCalendar repeatCalendar = NotificationCalendar(
           preciseAlarm: true,
+          allowWhileIdle: true,
           hour: nextNotificationTime.hour,
           minute: nextNotificationTime.minute,
           day: nextNotificationTime.day,

@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:greenlife/Notification/AppDropList.dart';
@@ -59,7 +58,7 @@ class _AddNotificationState extends State<AddNotification> {
           centerTitle: true,
           title: AppText(
             text: "التذكير بالعناية",
-            fontSize:22,
+            fontSize: 22,
             color: Colors.white,
           ),
 
@@ -67,8 +66,8 @@ class _AddNotificationState extends State<AddNotification> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildDropdown(
                   "ذكرني ب",
@@ -89,6 +88,9 @@ class _AddNotificationState extends State<AddNotification> {
               }),
               const SizedBox(height: 12),
               if (useSmartSchedule) _buildRepeater(),
+              SizedBox(
+                height: 20,
+              ),
               const Spacer(),
               Center(
                 child: ElevatedButton(
