@@ -4,8 +4,16 @@ import 'package:greenlife/PlantInMyLocation/PlantInMyLocation.dart';
 
 import 'Notification/add_notification.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  final String firstName, lastName;
+  const HomeScreen(
+      {super.key, required this.firstName, required this.lastName});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final items = const [
     "assets/images/rem.JPG",
     "assets/images/rem2.JPG",
@@ -19,6 +27,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Header Section
           Container(
+            width: double.maxFinite,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
@@ -34,14 +43,14 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 200,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
                 child: Align(
                   alignment: Alignment.centerRight,
                   // top: 150,
                   // right: 20,
                   child: Text(
-                    'مرحباً هيفاء محمد!',
+                    'مرحبًا ${widget.firstName} ${widget.lastName}',
                     style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -54,13 +63,13 @@ class HomeScreen extends StatelessWidget {
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 32.0, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 0.0, vertical: 10),
                 child: CarouselSlider(
                   options: CarouselOptions(
-                    height: 250,
+                    height: 150,
                     autoPlay: true,
                     enlargeCenterPage: true,
-                    viewportFraction: 0.9,
+                    viewportFraction: 0.52,
                   ),
                   items: items.map((item) {
                     return InkWell(
@@ -72,25 +81,10 @@ class HomeScreen extends StatelessWidget {
                                   builder: (context) => AddNotification()));
                         }
                       },
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(item,
-                                fit: BoxFit.cover, width: 1000),
-                          ),
-                          Container(
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [Colors.black54, Colors.transparent],
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child:
+                            Image.asset(item, fit: BoxFit.cover, width: 1000),
                       ),
                     );
                   }).toList(),

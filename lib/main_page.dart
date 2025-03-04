@@ -16,22 +16,29 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late List<Widget> _screens;
   var _index = 0;
-  final _screens = [
-    const HomeScreen(),
-    GoogleMapsScreen(),
-    const GoogleMapScreens(),
-    const HomeScreen(),
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      HomeScreen(firstName: widget.firstName, lastName: widget.lastName),
+      GoogleMapsScreen(),
+      GoogleMapScreens(),
+      HomeScreen(firstName: widget.firstName, lastName: widget.lastName),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'مرحبًا ${widget.firstName} ${widget.lastName}!',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     'مرحبًا ${widget.firstName} ${widget.lastName}!',
+      //     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      //   ),
+      // ),
       body: _screens[_index],
       bottomNavigationBar:
           // Bottom Navigation Bar
