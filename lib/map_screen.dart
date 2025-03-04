@@ -25,8 +25,29 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     getUserLocation();
   }
 
+  Future<void> requestLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.denied) {
+        print('تم رفض إذن الموقع');
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      print('إذن الموقع مرفوض نهائيًا، يجب تغييره من الإعدادات.');
+      return;
+    }
+
+    print('تم منح إذن الموقع بنجاح!');
+  }
+
   // Get User Location
   Future<void> getUserLocation() async {
+    await requestLocationPermission();
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -77,7 +98,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     Map<String, dynamic>? nearestCenter = findNearestCenter();
 
     return Scaffold(
-      appBar: AppBar(title: Text("Nearest Seedling Center")),
+      //appBar: AppBar(title: Text("Nearest Seedling Center")),
       body: userLocation == null
           ? Center(child: CircularProgressIndicator())
           : Column(
