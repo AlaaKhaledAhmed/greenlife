@@ -104,14 +104,6 @@ class _PlantInMyLocationState extends State<PlantInMyLocation> {
                                 builder: (context) =>
                                     PlantsList(city: filteredCities[index])),
                           );
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                                  Text("تم اختيار: ${filteredCities[index]}"),
-                              duration: const Duration(seconds: 1),
-                            ),
-                          );
                         },
                       );
                     },
