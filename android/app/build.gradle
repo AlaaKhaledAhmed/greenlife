@@ -9,6 +9,10 @@ plugins {
 }
 
 android {
+    aaptOptions {
+        noCompress 'tflite'
+        noCompress 'lite'
+    }
     namespace = "com.example.greenlife"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
