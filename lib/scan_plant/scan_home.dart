@@ -52,10 +52,10 @@ class _ScanHomeState extends State<ScanHome> {
   Future<void> classifyImage(File image) async {
     var recognitions = await Tflite.runModelOnImage(
       path: image.path,
-      imageMean: 0.0,
-      imageStd: 255.0,
-      numResults: 5, // زيادة عدد النتائج
-      threshold: 0.2,
+      imageMean: 127.5, // تعديل القيم إلى 127.5 لتحسين المعالجة
+      imageStd: 127.5, // تعديل التوزيع القياسي
+      numResults: 5, // زيادة عدد النتائج قد يكون مفيدًا
+      threshold: 0.1, // تقليل العتبة لتحسين النتائج
       asynch: true,
     );
 
