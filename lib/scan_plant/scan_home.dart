@@ -17,7 +17,6 @@ class _ScanHomeState extends State<ScanHome> {
   File? _image;
   String? plantName;
   String _result = "";
-  String? _plantName;
   bool isLoading = false;
   @override
   void initState() {
@@ -106,6 +105,8 @@ class _ScanHomeState extends State<ScanHome> {
         }
       }
     }
+
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("لا توجد معلومات عن ال$plantName"),

@@ -1,20 +1,14 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:greenlife/authentication.dart';
-import 'package:greenlife/main_page.dart';
+import 'package:greenlife/welcome_page.dart';
 import 'Notification/NotificationController.dart';
-import 'Notification/add_notification.dart';
 import 'Notification/initial_notification.dart';
-import 'PlantInMyLocation/PlantInMyLocation.dart';
 import 'PlantInMyLocation/app_color.dart';
 import 'firebase_options.dart';
-import 'home_screen.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
-import 'welcome_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,9 +56,7 @@ class _MyAppState extends State<MyApp> {
         fontFamily: GoogleFonts.tajawal().fontFamily,
       ),
       debugShowCheckedModeBanner: false,
-      home: MainScreen(firstName: 'الاء', lastName: 'احمد'),
-      //home: LoginPage(),
-      //home: WelcomePage(),
+      home: WelcomePage(),
       routes: {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignUpPage(),
