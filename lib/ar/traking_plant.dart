@@ -58,23 +58,20 @@ class _PlantARMeasurementState extends State<PlantARMeasurement> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // زر إعادة التعيين
-                  if (showResetButton)
-                    Positioned(
-                        bottom: 20,
-                        left: 20,
-                        child: AppButtons(
-                            backgroundColor: m.Colors.red,
-                            onPressed: _resetMeasurement,
-                            text: "إعادة التعيين")),
+
+                  Positioned(
+                      bottom: 20,
+                      left: 20,
+                      child: AppButtons(
+                          backgroundColor: m.Colors.red,
+                          onPressed: _resetMeasurement,
+                          text: "إعادة التعيين")),
 
                   //حساب الطول
                   AppButtons(
                       onPressed: () {
                         if (points.length == 2) {
                           _calculateDistance();
-                          setState(() {
-                            showResetButton = true;
-                          });
                         } else {
                           showAlert(
                               context: context,
@@ -148,8 +145,5 @@ class _PlantARMeasurementState extends State<PlantARMeasurement> {
 
     // إعادة ضبط المتغيرات
     points.clear();
-    setState(() {
-      showResetButton = false;
-    });
   }
 }
