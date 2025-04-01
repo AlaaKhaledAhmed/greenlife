@@ -50,21 +50,21 @@ class _AddNotificationState extends State<AddNotification> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.brown[50], // Background color as beige
-        appBar: AppBar(
-          centerTitle: true,
-          title: AppText(
-            text: "التذكير بالعناية",
-            fontSize: 22,
-            color: Colors.white,
-          ),
-
-          backgroundColor: Colors.green, // AppBar color
+    return Scaffold(
+      backgroundColor: Colors.brown[50], // Background color as beige
+      appBar: AppBar(
+        centerTitle: true,
+        title: AppText(
+          text: "التذكير بالعناية",
+          fontSize: 22,
+          color: Colors.white,
         ),
-        body: Padding(
+
+        backgroundColor: Colors.green, // AppBar color
+      ),
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             //crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +91,6 @@ class _AddNotificationState extends State<AddNotification> {
               SizedBox(
                 height: 20,
               ),
-              const Spacer(),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(

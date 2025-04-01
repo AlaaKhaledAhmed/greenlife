@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:greenlife/PlantInMyLocation/PlantInMyLocation.dart';
+import 'package:greenlife/ar/traking_plant.dart';
+import 'package:greenlife/volunteering.dart';
 
 import 'Notification/add_notification.dart';
 
@@ -79,6 +81,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AddNotification()));
+                        } else if (item == "assets/images/rem3.JPG") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ARMeasurementScreen()));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Volunteering()));
                         }
                       },
                       child: ClipRRect(

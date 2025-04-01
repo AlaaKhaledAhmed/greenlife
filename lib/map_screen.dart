@@ -26,6 +26,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   }
 
   Future<void> requestLocationPermission() async {
+    await Geolocator.requestPermission();
     LocationPermission permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
@@ -118,6 +119,10 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                         icon: BitmapDescriptor.defaultMarkerWithHue(
                           BitmapDescriptor.hueBlue,
                         ),
+                        draggable: true,
+                        onDragEnd: (position){
+                          print('postion:${position}');
+                        },
                         infoWindow: InfoWindow(title: "You are here"),
                       ),
                       // Seedling Centers Markers

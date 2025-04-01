@@ -50,20 +50,20 @@ class _PlantInMyLocationState extends State<PlantInMyLocation> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: AppText(
-            text: "اختر موقعًا",
-            fontSize: 22,
-            color: Colors.white,
-          ),
-
-          backgroundColor: Colors.green, // AppBar color
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: AppText(
+          text: "اختر موقعًا",
+          fontSize: 22,
+          color: Colors.white,
         ),
-        body: SafeArea(
+
+        backgroundColor: Colors.green, // AppBar color
+      ),
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

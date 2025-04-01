@@ -4,9 +4,12 @@ class Assets {
 
   static const String assetsLabels = 'assets/labels.txt';
   static const String assetsModelUnquant = 'assets/model_unquant.tflite';
+  static const String greenlifeAssetsLabels = 'assets/labels.txt';
+  static const String greenlifeAssetsModelUnquant = 'assets/model_unquant.tflite';
   static const String imagesBack = 'assets/images/back.JPG';
   static const String imagesBackground = 'images/background.png';
   static const String imagesPlantland = 'assets/images/plantland.JPG';
+  static const String imagesPoints = 'assets/images/points.png';
   static const String imagesRegplant = 'assets/images/regplant.JPG';
   static const String imagesRem = 'assets/images/rem.JPG';
   static const String imagesRem2 = 'assets/images/rem2.JPG';

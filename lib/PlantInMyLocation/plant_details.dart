@@ -23,20 +23,20 @@ class _PlantsDetailsState extends State<PlantsDetails> {
     final String careLevel = widget.data['care_level'] ?? "غير محدد";
     final List<dynamic> images = widget.data['images'] ?? [];
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: AppText(
-            text: "معلومات النبات",
-            fontSize: 22,
-            color: Colors.white,
-          ),
-
-          backgroundColor: Colors.green, // AppBar color
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: AppText(
+          text: "معلومات النبات",
+          fontSize: 22,
+          color: Colors.white,
         ),
-        body: SingleChildScrollView(
+
+        backgroundColor: Colors.green, // AppBar color
+      ),
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

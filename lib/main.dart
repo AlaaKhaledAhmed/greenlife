@@ -2,10 +2,14 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:greenlife/home_screen.dart';
+import 'package:greenlife/main_page.dart';
+import 'package:greenlife/map_screen.dart';
 import 'package:greenlife/welcome_page.dart';
 import 'Notification/NotificationController.dart';
 import 'Notification/initial_notification.dart';
 import 'PlantInMyLocation/app_color.dart';
+import 'ar/traking_plant.dart';
 import 'firebase_options.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
@@ -56,7 +60,10 @@ class _MyAppState extends State<MyApp> {
         fontFamily: GoogleFonts.tajawal().fontFamily,
       ),
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
+      //home: WelcomePage(),
+      home: MainScreen(firstName: 'firstName', lastName: 'lastName')
+      //GoogleMapsScreen()
+      ,
       routes: {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignUpPage(),
@@ -64,3 +71,5 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+// //
+

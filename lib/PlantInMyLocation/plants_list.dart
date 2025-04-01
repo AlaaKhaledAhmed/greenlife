@@ -62,33 +62,38 @@ class _PlantsListState extends State<PlantsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          leadingWidth: 100,
-          centerTitle: true,
-          title: AppText(
-            text: widget.city,
-            fontSize: 22,
-            color: Colors.white,
-          ),
-          leading: Row(
-            children: [
-              IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.arrow_back)),
-              Icon(
-                Icons.location_on,
-                color: Colors.white,
-              ),
-            ],
-          ),
-          backgroundColor: Colors.green, // AppBar color
+    return Scaffold(
+      appBar: AppBar(
+        leadingWidth: 100,
+        centerTitle: true,
+        title: AppText(
+          text: widget.city,
+          fontSize: 22,
+          color: Colors.white,
         ),
-        body: Column(
+        leading: Row(
+          children: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back)),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Icon(
+              Icons.location_on,
+              color: Colors.white,
+            ),
+          ),
+        ],
+        backgroundColor: Colors.green, // AppBar color
+      ),
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Column(
           children: [
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
