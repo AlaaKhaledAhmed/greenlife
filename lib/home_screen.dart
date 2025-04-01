@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:greenlife/PlantInMyLocation/PlantInMyLocation.dart';
-import 'package:greenlife/ar/traking_plant.dart';
+import 'package:greenlife/ar/add_measurement.dart';
 import 'package:greenlife/volunteering.dart';
 
 import 'Notification/add_notification.dart';
+import 'ar/measurement_history.dart';
 
 class HomeScreen extends StatefulWidget {
   final String firstName, lastName;
@@ -85,7 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PlantARMeasurement()));
+                                  builder: (context) =>
+                                      MeasurementHistoryPage()));
                         } else {
                           Navigator.push(
                               context,

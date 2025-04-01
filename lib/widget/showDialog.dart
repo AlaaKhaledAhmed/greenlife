@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:greenlife/widget/AppSize.dart';
 import 'package:greenlife/widget/AppText.dart';
+import 'package:greenlife/widget/app_button.dart';
 import 'package:greenlife/widget/app_color.dart';
 
 showAlert(
     {required BuildContext context,
     required String title,
-    required String content}) {
+    required String content,
+    String? buttonsText,
+    bool? showButton,
+    Function()? onConfirm}) {
   return showDialog(
     context: context,
     builder: (_) => Directionality(
@@ -28,6 +32,12 @@ showAlert(
           padding: const EdgeInsets.all(8.0),
           child: Text(content),
         ),
+        actions: [
+          showButton == true
+              ? Center(
+                  child: AppButtons(onPressed: onConfirm, text: buttonsText!))
+              : SizedBox()
+        ],
       ),
     ),
   );

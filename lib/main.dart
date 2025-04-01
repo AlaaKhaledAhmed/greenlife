@@ -9,7 +9,7 @@ import 'package:greenlife/welcome_page.dart';
 import 'package:greenlife/widget/app_color.dart';
 import 'Notification/NotificationController.dart';
 import 'Notification/initial_notification.dart';
-import 'ar/traking_plant.dart';
+import 'ar/add_measurement.dart';
 import 'firebase_options.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
