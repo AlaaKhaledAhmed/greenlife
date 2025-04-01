@@ -4,6 +4,7 @@ import 'package:greenlife/ar/add_measurement.dart';
 import 'package:greenlife/widget/AppSize.dart';
 import 'package:greenlife/widget/AppText.dart';
 import 'package:greenlife/widget/app_color.dart';
+import 'package:greenlife/widget/utils.dart';
 
 class MeasurementHistoryPage extends StatelessWidget {
   const MeasurementHistoryPage({super.key});
@@ -62,7 +63,7 @@ class MeasurementHistoryPage extends StatelessWidget {
                               ? Colors.blue
                               : Colors.green,
                     ),
-                    trailing: Text(_formatTimestamp(data['timestamp'])),
+                    trailing: Text(Utils.convertMessageTime(data['timestamp'])),
                   ),
                 );
               },
@@ -73,8 +74,8 @@ class MeasurementHistoryPage extends StatelessWidget {
     );
   }
 
-  String _formatTimestamp(Timestamp timestamp) {
-    DateTime dateTime = timestamp.toDate();
-    return "${dateTime.year}-${dateTime.month}-${dateTime.day} ${dateTime.hour}:${dateTime.minute}";
-  }
+  // String _formatTimestamp(Timestamp timestamp) {
+  //   DateTime dateTime = timestamp.toDate();
+  //   return "${dateTime.year}-${dateTime.month}-${dateTime.day} ${dateTime.hour}:${dateTime.minute}";
+  // }
 }

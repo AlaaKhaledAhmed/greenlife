@@ -51,6 +51,7 @@ dependencies:
   ar_flutter_plugin_engine: ^1.0.1
   url_launcher: ^6.3.1
   webview_flutter: ^4.10.0
+  intl: ^0.20.2
 
 
 #  geocoding: ^3.0.0
@@ -61,6 +62,7 @@ dev_dependencies:
     sdk: flutter
 
 dependency_overrides:
+
   geolocator: ^13.0.2
   permission_handler: ^11.0.0
 

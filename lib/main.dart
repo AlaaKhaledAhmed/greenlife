@@ -13,12 +13,14 @@ import 'ar/add_measurement.dart';
 import 'firebase_options.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   ///init local notification
   LocalNotificationServices.initialize();
+  initializeDateFormatting();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
