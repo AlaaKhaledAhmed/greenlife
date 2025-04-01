@@ -44,30 +44,37 @@ class MeasurementHistoryPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             var docs = snapshot.data!.docs;
-            return ListView.builder(
-              itemCount: docs.length,
-              itemBuilder: (context, index) {
-                var data = docs[index];
-                return Card(
-                  margin: const EdgeInsets.all(8),
-                  child: ListTile(
-                    title: Text(
-                        "القياس: ${data['distance'].toStringAsFixed(2)} سم"),
-                    subtitle: AppText(
-                      fontWeight: FontWeight.bold,
-                      text: "الحالة: ${data['status']}",
-                      fontSize: AppSize.smallSubText,
-                      color: data['status'] == "تراجع"
-                          ? Colors.red
-                          : data['status'] == "نمو ثابت"
-                              ? Colors.blue
-                              : Colors.green,
-                    ),
-                    trailing: Text(Utils.convertMessageTime(data['timestamp'])),
-                  ),
-                );
-              },
-            );
+            return docs.isEmpty
+                ? Center(
+                    child: AppText(
+                        text: 'لا توجد قياسات حالية',
+                        fontSize: AppSize.smallSubText),
+                  )
+                : ListView.builder(
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) {
+                      var data = docs[index];
+                      return Card(
+                        margin: const EdgeInsets.all(8),
+                        child: ListTile(
+                          title: Text(
+                              "القياس: ${data['distance'].toStringAsFixed(2)} سم"),
+                          subtitle: AppText(
+                            fontWeight: FontWeight.bold,
+                            text: "الحالة: ${data['status']}",
+                            fontSize: AppSize.smallSubText,
+                            color: data['status'] == "تراجع"
+                                ? Colors.red
+                                : data['status'] == "نمو ثابت"
+                                    ? Colors.blue
+                                    : Colors.green,
+                          ),
+                          trailing:
+                              Text(Utils.convertMessageTime(data['timestamp'])),
+                        ),
+                      );
+                    },
+                  );
           },
         ),
       ),
