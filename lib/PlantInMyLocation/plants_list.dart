@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:greenlife/PlantInMyLocation/plant_details.dart';
+import 'package:greenlife/widget/AppText.dart';
+import '../widget/AppSize.dart';
 
-import 'AppSize.dart';
-import 'AppText.dart';
 
 class PlantsList extends StatefulWidget {
   final String city;

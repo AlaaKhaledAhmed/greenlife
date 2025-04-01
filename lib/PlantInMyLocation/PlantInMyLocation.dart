@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:greenlife/PlantInMyLocation/plants_list.dart';
+import 'package:greenlife/widget/AppText.dart';
 
-import 'AppSize.dart';
-import 'AppText.dart';
 
 class PlantInMyLocation extends StatefulWidget {
   const PlantInMyLocation({super.key});

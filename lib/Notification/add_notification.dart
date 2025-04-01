@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:greenlife/Notification/AppDropList.dart';
 import 'package:greenlife/Notification/MessageDetails.dart';
-import 'package:greenlife/PlantInMyLocation/AppSize.dart';
-import 'package:greenlife/PlantInMyLocation/AppText.dart';
-
+import 'package:greenlife/widget/AppSize.dart';
+import 'package:greenlife/widget/AppText.dart';
 import 'initial_notification.dart';
 
 class AddNotification extends StatefulWidget {

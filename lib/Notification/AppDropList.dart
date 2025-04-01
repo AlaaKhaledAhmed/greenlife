@@ -1,10 +1,8 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
-
-import '../PlantInMyLocation/AppSize.dart';
-import '../PlantInMyLocation/AppText.dart';
+import '../widget/AppSize.dart';
+import 'package:greenlife/widget/AppText.dart';
 
 class AppDropList<T> extends StatelessWidget {
   final List<T>? items;
@@ -34,7 +32,7 @@ class AppDropList<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField2<T>(
-      alignment: AlignmentDirectional.centerStart,
+        alignment: AlignmentDirectional.centerStart,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         menuItemStyleData:
             MenuItemStyleData(padding: EdgeInsets.only(right: 10)),
@@ -43,14 +41,14 @@ class AppDropList<T> extends StatelessWidget {
         dropdownStyleData: DropdownStyleData(
           maxHeight: 200,
           decoration: BoxDecoration(
-              color:  Colors.grey.shade300,
+              color: Colors.grey.shade300,
               borderRadius: BorderRadius.all(Radius.circular(4))),
         ),
         buttonStyleData: ButtonStyleData(
           height: 20,
         ),
         hint: AppText(
-          fontSize: AppSize.smallSubText+2,
+          fontSize: AppSize.smallSubText + 2,
           text: hintText,
           color: Colors.black,
         ),
@@ -72,7 +70,7 @@ class AppDropList<T> extends StatelessWidget {
                       alignment: AlignmentDirectional.centerEnd,
                       value: e,
                       child: AppText(
-                        fontSize: AppSize.smallSubText+2,
+                        fontSize: AppSize.smallSubText + 2,
                         text: '$e',
                         color: Colors.black,
                       ),

@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ARMeasurementScreen()));
+                                  builder: (context) => PlantARMeasurement()));
                         } else {
                           Navigator.push(
                               context,

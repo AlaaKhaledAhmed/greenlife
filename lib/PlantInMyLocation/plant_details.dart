@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'AppSize.dart';
-import 'AppText.dart';
+import 'package:greenlife/widget/AppText.dart';
 
 class PlantsDetails extends StatefulWidget {
   final Map<String, dynamic> data;

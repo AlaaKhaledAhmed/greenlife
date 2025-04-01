@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
-import 'PlantInMyLocation/AppText.dart';
+import 'package:greenlife/widget/AppText.dart';
 
 class Volunteering extends StatefulWidget {
   const Volunteering({super.key});
