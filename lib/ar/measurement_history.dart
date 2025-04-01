@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:greenlife/ar/add_measurement.dart';
+import 'package:greenlife/widget/AppSize.dart';
 import 'package:greenlife/widget/AppText.dart';
 import 'package:greenlife/widget/app_color.dart';
 
@@ -51,7 +52,16 @@ class MeasurementHistoryPage extends StatelessWidget {
                   child: ListTile(
                     title: Text(
                         "القياس: ${data['distance'].toStringAsFixed(2)} سم"),
-                    subtitle: Text("الحالة: ${data['status']}"),
+                    subtitle: AppText(
+                      fontWeight: FontWeight.bold,
+                      text: "الحالة: ${data['status']}",
+                      fontSize: AppSize.smallSubText,
+                      color: data['status'] == "تراجع"
+                          ? Colors.red
+                          : data['status'] == "نمو ثابت"
+                              ? Colors.blue
+                              : Colors.green,
+                    ),
                     trailing: Text(_formatTimestamp(data['timestamp'])),
                   ),
                 );
