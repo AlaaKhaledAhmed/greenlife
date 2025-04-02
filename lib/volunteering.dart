@@ -17,7 +17,7 @@ class _VolunteeringState extends State<Volunteering> {
   @override
   void initState() {
     super.initState();
-    url = "https://ehsan.sa/subsidy/details/10409";
+    url = "https://nvg.gov.sa/admin/vol-opports";
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
