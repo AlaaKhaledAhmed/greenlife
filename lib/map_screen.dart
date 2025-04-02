@@ -1,152 +1,210 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:geocoding/geocoding.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class GoogleMapsScreen extends StatefulWidget {
+  const GoogleMapsScreen({super.key});
+
   @override
-  _GoogleMapsScreenState createState() => _GoogleMapsScreenState();
+  State<GoogleMapsScreen> createState() => _GoogleMapsScreenState();
 }
 
 class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
-  GoogleMapController? mapController;
-  LatLng? userLocation;
-  String? userAddress;
-
-  List<Map<String, dynamic>> seedlingCenters = [
-    {"name": "Green Seedlings", "lat": 40.712776, "lng": -74.005974},
-    {"name": "Eco Nursery", "lat": 34.052235, "lng": -118.243683},
-    {"name": "Nature's Hub", "lat": 37.774929, "lng": -122.419418},
-  ];
+  GoogleMapController? _mapController;
+  Position? _currentPosition;
+  Set<Marker> _markers = {};
+  Set<Circle> _circles = {}; // Set for circles
+  List<Map<String, dynamic>> _nurseries = []; // List to store nursery data
+  int searchRadius = 1000; // Initial search radius in meters
+  bool isLoading = false; // Flag to prevent repeated requests
+  bool noNurseriesFound = false; // Flag to show no nurseries found message
 
   @override
   void initState() {
     super.initState();
-    getUserLocation();
+    _getLocationAndFetchNurseries();
   }
 
-  Future<void> requestLocationPermission() async {
-    await Geolocator.requestPermission();
-    LocationPermission permission = await Geolocator.checkPermission();
+  Future<void> _getLocationAndFetchNurseries() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
 
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-
-      if (permission == LocationPermission.denied) {
-        print('تم رفض إذن الموقع');
-        return;
-      }
+      if (permission == LocationPermission.deniedForever) return;
     }
 
-    if (permission == LocationPermission.deniedForever) {
-      print('إذن الموقع مرفوض نهائيًا، يجب تغييره من الإعدادات.');
-      return;
-    }
-
-    print('تم منح إذن الموقع بنجاح!');
-  }
-
-  // Get User Location
-  Future<void> getUserLocation() async {
-    await requestLocationPermission();
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
+    Position position = await Geolocator.getCurrentPosition();
     setState(() {
-      userLocation = LatLng(position.latitude, position.longitude);
+      _currentPosition = position;
+      noNurseriesFound = false; // Reset the flag before new search
     });
 
-    // Convert coordinates to address
-    // List<Placemark> placemarks = await placemarkFromCoordinates(
-    //   position.latitude,
-    //   position.longitude,
-    // );
-
-    // if (placemarks.isNotEmpty) {
-    //   setState(() {
-    //     userAddress = "${placemarks[0].street}, ${placemarks[0].locality}";
-    //   });
-    // }
+    _fetchNurseries(position.latitude, position.longitude, searchRadius);
   }
 
-  // Find Nearest Seedling Center
-  Map<String, dynamic>? findNearestCenter() {
-    if (userLocation == null) return null;
+  Future<void> _fetchNurseries(double lat, double lon, int radius) async {
+    /// "garden_centre" refers to stores or centers that sell a variety of gardening products
+    /// including plants, tools, soil, fertilizers, and flowers. It's a general gardening store.
+    /// Example: A shop selling tools and plants together would be categorized as "garden_centre".
 
-    double minDistance = double.infinity;
-    Map<String, dynamic>? nearestCenter;
+    /// "plant_nursery" refers to places that specifically grow and sell plants, such as young trees,
+    /// shrubs, flowers, and other plants. They focus on nurturing and selling plants before they
+    /// reach full maturity, often for resale to garden centers or retail stores.
+    /// Example: A place that specializes in growing and selling only plants would be categorized as "plant_nursery".
 
-    for (var center in seedlingCenters) {
-      double distance = Geolocator.distanceBetween(
-        userLocation!.latitude,
-        userLocation!.longitude,
-        center['lat'],
-        center['lng'],
-      );
+    if (isLoading) return; // Prevent multiple requests
+    setState(() {
+      isLoading = true;
+    });
 
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestCenter = center;
+    final query = '''
+      [out:json];
+      node
+        ["shop"="plant_nursery"]
+        (around:$radius,$lat,$lon);
+      out;
+    ''';
+
+    final url =
+        'https://overpass-api.de/api/interpreter?data=${Uri.encodeComponent(query)}';
+
+    final response = await http.get(Uri.parse(url));
+    debugPrint("==========data: ${response.body}");
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['elements'];
+
+      Set<Marker> markers = {
+        Marker(
+          markerId: MarkerId('user_location'),
+          position: LatLng(lat, lon),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          infoWindow: InfoWindow(title: "موقعك الحالي"),
+        ),
+      };
+
+      // Add nurseries markers
+      List<Map<String, dynamic>> nurseriesList = [];
+      for (var item in data.take(3)) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(item["id"].toString()),
+            position: LatLng(item["lat"], item["lon"]),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen),
+            infoWindow: InfoWindow(
+              title: item["tags"]["name"] ?? "مشتل غير معروف",
+            ),
+          ),
+        );
+        nurseriesList.add({
+          "name": item["tags"]["name"] ?? "مشتل غير معروف",
+          "latitude": item["lat"],
+          "longitude": item["lon"],
+        });
+      }
+
+      // Set the circle based on radius
+      Set<Circle> circles = {
+        Circle(
+          circleId: CircleId('user_location_circle'),
+          center: LatLng(lat, lon),
+          radius: radius.toDouble(),
+          strokeColor: Colors.blue,
+          strokeWidth: 2,
+          fillColor: Colors.blue.withOpacity(0.1),
+        ),
+      };
+
+      setState(() {
+        _markers = markers;
+        _circles = circles;
+        _nurseries = nurseriesList;
+        isLoading = false;
+      });
+
+      // If fewer than 3 nurseries found, increase the search radius and retry
+      if (nurseriesList.length < 3) {
+        if (radius < 100000) {
+          // Max radius limit (100,000 meters)
+          searchRadius = radius + 200; // Increase radius by 200m
+          _fetchNurseries(lat, lon, searchRadius); // Retry with new radius
+        } else {
+          // If no nurseries found even after max radius, show message
+          setState(() {
+            noNurseriesFound = true;
+            isLoading = false;
+          });
+        }
+      } else {
+        // If 3 or more nurseries are found, stop the search
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(LatLng(lat, lon), 14),
+        );
       }
     }
+  }
 
-    return nearestCenter;
+  void _moveToLocation(double lat, double lon) {
+    _mapController
+        ?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lon), 16));
+  }
+
+  void _openInGoogleMaps(double lat, double lon) async {
+    final url = "https://www.google.com/maps/search/?api=1&query=$lat,$lon";
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic>? nearestCenter = findNearestCenter();
-
     return Scaffold(
-      //appBar: AppBar(title: Text("Nearest Seedling Center")),
-      body: userLocation == null
-          ? Center(child: CircularProgressIndicator())
+      appBar: AppBar(title: const Text("أقرب 3 مشاتل زراعية")),
+      body: _currentPosition == null
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 Expanded(
+                  flex: 2,
                   child: GoogleMap(
-                    onMapCreated: (controller) => mapController = controller,
                     initialCameraPosition: CameraPosition(
-                      target: userLocation!,
-                      zoom: 12,
+                      target: LatLng(_currentPosition!.latitude,
+                          _currentPosition!.longitude),
+                      zoom: 14.0,
                     ),
-                    markers: {
-                      // User Location Marker
-                      Marker(
-                        markerId: MarkerId("userLocation"),
-                        position: userLocation!,
-                        icon: BitmapDescriptor.defaultMarkerWithHue(
-                          BitmapDescriptor.hueBlue,
-                        ),
-                        draggable: true,
-                        onDragEnd: (position){
-                          print('postion:${position}');
-                        },
-                        infoWindow: InfoWindow(title: "You are here"),
-                      ),
-                      // Seedling Centers Markers
-                      for (var center in seedlingCenters)
-                        Marker(
-                          markerId: MarkerId(center['name']),
-                          position: LatLng(center['lat'], center['lng']),
-                          icon: BitmapDescriptor.defaultMarker,
-                          infoWindow: InfoWindow(title: center['name']),
-                        ),
+                    markers: _markers,
+                    circles: _circles, // Add the circles to the map
+                    onMapCreated: (GoogleMapController controller) {
+                      _mapController = controller;
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text("Your Location: $userAddress"),
-                      SizedBox(height: 10),
-                      nearestCenter == null
-                          ? Text("Finding nearest center...")
-                          : Text("Nearest Center: ${nearestCenter['name']}"),
-                    ],
-                  ),
+                Expanded(
+                  flex: 1,
+                  child: _nurseries.isEmpty && noNurseriesFound
+                      ? Center(child: Text("لا توجد مشاتل قريبة"))
+                      : ListView.builder(
+                          itemCount: _nurseries.length,
+                          itemBuilder: (context, index) {
+                            var nursery = _nurseries[index];
+                            return ListTile(
+                              title: Text(nursery["name"]),
+                              onTap: () => _moveToLocation(
+                                  nursery["latitude"], nursery["longitude"]),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.directions),
+                                onPressed: () => _openInGoogleMaps(
+                                    nursery["latitude"], nursery["longitude"]),
+                              ),
+                            );
+                          },
+                        ),
                 ),
               ],
             ),

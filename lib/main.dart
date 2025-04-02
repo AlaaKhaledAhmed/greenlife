@@ -63,9 +63,9 @@ class _MyAppState extends State<MyApp> {
         fontFamily: GoogleFonts.tajawal().fontFamily,
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      //home: LoginPage(),
      //home: MainScreen(firstName: 'firstName', lastName: 'lastName'),
-      //GoogleMapsScreen()
+      home:GoogleMapsScreen(),
 
       routes: {
         '/login': (context) => LoginPage(),
