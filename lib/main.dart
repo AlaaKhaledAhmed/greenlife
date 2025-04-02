@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:greenlife/home_screen.dart';
 import 'package:greenlife/main_page.dart';
 import 'package:greenlife/map_screen.dart';
+import 'package:greenlife/profile.dart';
 import 'package:greenlife/welcome_page.dart';
 import 'package:greenlife/widget/app_color.dart';
 import 'Notification/NotificationController.dart';
@@ -62,10 +63,10 @@ class _MyAppState extends State<MyApp> {
         fontFamily: GoogleFonts.tajawal().fontFamily,
       ),
       debugShowCheckedModeBanner: false,
-      //home: WelcomePage(),
-      home: MainScreen(firstName: 'firstName', lastName: 'lastName')
+      home: LoginPage(),
+     //home: MainScreen(firstName: 'firstName', lastName: 'lastName'),
       //GoogleMapsScreen()
-      ,
+
       routes: {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignUpPage(),

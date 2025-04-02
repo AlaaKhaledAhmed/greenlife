@@ -74,6 +74,8 @@ class _SignUpPageState extends State<SignUpPage> {
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
         'email': _emailController.text.trim(),
+        'username': _usernameController.text.trim(),
+        'password': _passwordController.text.trim(),
       });
 
       // إرسال رسالة تحقق بالبريد الإلكتروني
@@ -261,7 +263,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                     const Color.fromARGB(255, 68, 49, 31),
                                 padding: EdgeInsets.symmetric(vertical: 15),
                                 minimumSize: Size(double.infinity, 50),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
                                 textStyle: TextStyle(fontSize: 18),
                               ),
                             ),

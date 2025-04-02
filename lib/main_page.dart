@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
       HomeScreen(firstName: widget.firstName, lastName: widget.lastName),
       GoogleMapsScreen(),
       ScanHome(),
-      Profile(),
+      ProfilePage(),
     ];
   }
 
