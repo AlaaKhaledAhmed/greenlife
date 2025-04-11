@@ -1,237 +1,3 @@
-// import 'dart:convert';
-// import 'package:flutter/material.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:geolocator/geolocator.dart';
-// import 'package:greenlife/widget/AppSize.dart';
-// import 'package:greenlife/widget/AppText.dart';
-// import 'package:greenlife/widget/showDialog.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:url_launcher/url_launcher.dart';
-//
-// class GoogleMapsScreen extends StatefulWidget {
-//   const GoogleMapsScreen({super.key});
-//
-//   @override
-//   State<GoogleMapsScreen> createState() => _GoogleMapsScreenState();
-// }
-//
-// class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
-//   GoogleMapController? _mapController;
-//   Position? _currentPosition;
-//   Set<Marker> _markers = {};
-//   Set<Circle> _circles = {}; // Set for circles
-//   List<Map<String, dynamic>> _nurseries = []; // List to store nursery data
-//   int searchRadius = 1000; // Initial search radius in meters
-//   bool isLoading = false; // Flag to prevent repeated requests
-//   bool noNurseriesFound = false; // Flag to show no nurseries found message
-// double zoom =14;
-//   @override
-//   void initState() {
-//     super.initState();
-//     _getLocationAndFetchNurseries();
-//   }
-//
-//   Future<void> _getLocationAndFetchNurseries() async {
-//     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-//     if (!serviceEnabled) return;
-//
-//     LocationPermission permission = await Geolocator.checkPermission();
-//     if (permission == LocationPermission.denied) {
-//       permission = await Geolocator.requestPermission();
-//       if (permission == LocationPermission.deniedForever) return;
-//     }
-//
-//     Position position = await Geolocator.getCurrentPosition();
-//     setState(() {
-//       _currentPosition = position;
-//       noNurseriesFound = false; // Reset the flag before new search
-//     });
-//
-//     _fetchNurseries(position.latitude, position.longitude, searchRadius);
-//   }
-//
-//   Future<void> _fetchNurseries(double lat, double lon, int radius) async {
-//     /// "garden_centre" refers to stores or centers that sell a variety of gardening products
-//     /// including plants, tools, soil, fertilizers, and flowers. It's a general gardening store.
-//     /// Example: A shop selling tools and plants together would be categorized as "garden_centre".
-//
-//     /// "plant_nursery" refers to places that specifically grow and sell plants, such as young trees,
-//     /// shrubs, flowers, and other plants. They focus on nurturing and selling plants before they
-//     /// reach full maturity, often for resale to garden centers or retail stores.
-//     /// Example: A place that specializes in growing and selling only plants would be categorized as "plant_nursery".
-//
-//     if (isLoading) return; // Prevent multiple requests
-//     setState(() {
-//       isLoading = true;
-//     });
-//
-//     final query = '''
-//       [out:json];
-//       node
-//         ["shop"="garden_centre"]
-//         (around:$radius,$lat,$lon);
-//       out;
-//     ''';
-//
-//     final url =
-//         'https://overpass-api.de/api/interpreter?data=${Uri.encodeComponent(query)}';
-//
-//     final response = await http.get(Uri.parse(url));
-//     debugPrint("==========data: ${response.body}");
-//
-//     if (response.statusCode == 200) {
-//       List data = json.decode(response.body)['elements'];
-//
-//       Set<Marker> markers = {
-//         Marker(
-//           markerId: MarkerId('user_location'),
-//           position: LatLng(lat, lon),
-//           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-//           infoWindow: InfoWindow(title: "موقعك الحالي"),
-//         ),
-//       };
-//
-//       // Add nurseries markers
-//       List<Map<String, dynamic>> nurseriesList = [];
-//       for (var item in data.take(3)) {
-//         markers.add(
-//           Marker(
-//             markerId: MarkerId(item["id"].toString()),
-//             position: LatLng(item["lat"], item["lon"]),
-//             icon: BitmapDescriptor.defaultMarkerWithHue(
-//                 BitmapDescriptor.hueGreen),
-//             infoWindow: InfoWindow(
-//               title: item["tags"]["name"] ?? "مشتل غير معروف",
-//             ),
-//           ),
-//         );
-//         nurseriesList.add({
-//           "name": item["tags"]["name"] ?? "مشتل غير معروف",
-//           "latitude": item["lat"],
-//           "longitude": item["lon"],
-//         });
-//       }
-//
-//       // Set the circle based on radius
-//       Set<Circle> circles = {
-//         Circle(
-//           circleId: CircleId('user_location_circle'),
-//           center: LatLng(lat, lon),
-//           radius: radius.toDouble(),
-//           strokeColor: Colors.blue,
-//           strokeWidth: 2,
-//           fillColor: Colors.blue.withOpacity(0.1),
-//         ),
-//       };
-//
-//       setState(() {
-//         _markers = markers;
-//         _circles = circles;
-//         _nurseries = nurseriesList;
-//         isLoading = false;
-//       });
-//
-//       // If fewer than 3 nurseries found, increase the search radius and retry
-//       if (nurseriesList.length < 3) {
-//         if (radius < 30000) {
-//           // Max radius limit (30,000 meters)
-//           searchRadius = radius + 1000;
-//           zoom=zoom-4;// Increase radius by 200m
-//           _fetchNurseries(lat, lon, searchRadius); // Retry with new radius
-//         } else {
-//           // If no nurseries found even after max radius, show message
-//           setState(() {
-//             noNurseriesFound = true;
-//             isLoading = false;
-//           });
-//         }
-//       } else {
-//         // If 3 or more nurseries are found, stop the search
-//         _mapController?.animateCamera(
-//           CameraUpdate.newLatLngZoom(LatLng(lat, lon), 14),
-//         );
-//       }
-//     }
-//   }
-//
-//   void _moveToLocation(double lat, double lon) {
-//     _mapController
-//         ?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lon), 16));
-//   }
-//
-//   void _openInGoogleMaps(double lat, double lon) async {
-//     final url = "https://www.google.com/maps/search/?api=1&query=$lat,$lon";
-//     if (await canLaunch(url)) {
-//       await launch(url);
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         centerTitle: true,
-//         title: Text('المشاتل الزراعية',
-//             style: TextStyle(fontSize: 22, color: Colors.white)),
-//         backgroundColor: Colors.green,
-//       ),
-//       body:
-//       _currentPosition == null
-//           ? const Center(child: CircularProgressIndicator())
-//           :
-//       Stack(
-//               children: [
-//                 GoogleMap(
-//                   initialCameraPosition: CameraPosition(
-//                     target: LatLng(_currentPosition!.latitude,
-//                         _currentPosition!.longitude),
-//                     zoom: 14,
-//                   ),
-//                   markers: _markers,
-//                   circles: _circles, // Add the circles to the map
-//                   onMapCreated: (GoogleMapController controller) {
-//                     _mapController = controller;
-//                   },
-//                 ),
-//                 _nurseries.isEmpty && noNurseriesFound
-//                     ? showAlert(
-//                         context: context,
-//                         title: 'المشاتل الزراعية',
-//                         content: 'لا توجد مشاتل قريبة من موقعك الحالي')
-//                     :
-//                 Positioned(
-//                         bottom: 30,
-//                         left: 10,
-//                         right: 10,
-//                         child: ListView.builder(
-//                           scrollDirection: Axis.horizontal,
-//                           itemCount: 3,//_nurseries.length,
-//                           itemBuilder: (context, index) {
-//                             var nursery = _nurseries[index];
-//                             return ListTile(
-//                               tileColor: Colors.blue,
-//                               title: AppText(text: "ffff",fontSize: AppSize.smallSubText,
-//                                   //nursery["name"]
-//                               ),
-//                               onTap: () => _moveToLocation(
-//                                   nursery["latitude"],
-//                                   nursery["longitude"]),
-//                               trailing: IconButton(
-//                                 icon: const Icon(Icons.directions,size: 30,color: Colors.green,),
-//                                 onPressed: () => _openInGoogleMaps(
-//                                     nursery["latitude"],
-//                                     nursery["longitude"]),
-//                               ),
-//                             );
-//                           },
-//                         ),
-//                       ),
-//               ],
-//             ),
-//     );
-//   }
-// }
-
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -260,7 +26,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   int searchRadius = 1000;
   bool isLoading = false;
   bool noNurseriesFound = false;
-
+  double maxDistance = 300000;
   @override
   void initState() {
     super.initState();
@@ -287,18 +53,27 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   }
 
   Future<void> _fetchNurseries(double lat, double lon, int radius) async {
+    /// "garden_centre" refers to stores or centers that sell a variety of gardening products
+    /// including plants, tools, soil, fertilizers, and flowers. It's a general gardening store.
+    /// Example: A shop selling tools and plants together would be categorized as "garden_centre".
+
+    /// "plant_nursery" refers to places that specifically grow and sell plants, such as young trees,
+    /// shrubs, flowers, and other plants. They focus on nurturing and selling plants before they
+    /// reach full maturity, often for resale to garden centers or retail stores.
+    /// Example: A place that specializes in growing and selling only plants would be categorized as "plant_nursery".
     if (isLoading) return;
     setState(() {
       isLoading = true;
     });
 
     final query = '''
-      [out:json];
-      node
-        ["shop"="garden_centre"]
-        (around:$radius,$lat,$lon);
-      out;
-    ''';
+  [out:json];
+  (
+    node["shop"="plant_nursery"](around:$radius,$lat,$lon);
+    node["shop"="garden_centre"](around:$radius,$lat,$lon);
+  );
+  out;
+''';
 
     final url =
         'https://overpass-api.de/api/interpreter?data=${Uri.encodeComponent(query)}';
@@ -307,8 +82,8 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     debugPrint("==========data: ${response.body}");
 
     if (response.statusCode == 200) {
-      List data = json.decode(response.body)['elements'];
-
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final data = json.decode(decodedBody)['elements'];
       Set<Marker> markers = {
         Marker(
           markerId: MarkerId('user_location'),
@@ -359,8 +134,8 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
       await _zoomToFitCircle(LatLng(lat, lon), radius.toDouble());
 
       if (nurseriesList.length < 3) {
-        if (radius < 30000) {
-          searchRadius = radius + 1000;
+        if (radius < maxDistance) {
+          searchRadius = radius + 10000;
           _fetchNurseries(lat, lon, searchRadius);
         } else {
           setState(() {
@@ -412,7 +187,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                 size: 30,
               ))
         ],
-        title: const Text('المشاتل الزراعية',
+        title: const Text('محلات بيع الشتلات',
             style: TextStyle(fontSize: 22, color: Colors.white)),
         backgroundColor: Colors.green,
       ),
@@ -433,13 +208,15 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                   },
                 ),
 //search range==================================================================================================================================================================================================================================================
-                Positioned(
+                //don't show container when complete search
+                if (!(searchRadius >= maxDistance && _nurseries.isNotEmpty))
+                  Positioned(
                   top: 10,
                   left: 10,
                   right: 10,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 16),
                     decoration: BoxDecoration(
                       color: _nurseries.isEmpty && noNurseriesFound
                           ? Colors.red
@@ -456,7 +233,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                     child: Text(
                       _nurseries.isEmpty && noNurseriesFound
                           ? 'لا توجد مشاتل قريبة من موقعك الحالي'
-                          : 'تم البحث في نطاق: $searchRadius متر من أصل 30000 متر',
+                          : 'تم البحث في نطاق: ${_circles.isNotEmpty ? min(_circles.first.radius.toInt(), maxDistance.toInt()) : 0} متر من أصل ${maxDistance.toInt()} متر',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -480,14 +257,13 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                     itemBuilder: (context, index) {
                       var nursery = _nurseries[index];
                       return Container(
-                        //  width: 250,
                         margin: const EdgeInsets.only(right: 10),
                         child: Card(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                              borderRadius: BorderRadius.circular(20)),
                           elevation: 5,
                           child: Padding(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,

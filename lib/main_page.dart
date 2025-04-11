@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greenlife/profile.dart';
 import 'package:greenlife/scan_plant/scan_home.dart';
-
-import 'google_map_screens.dart';
 import 'home_screen.dart';
 import 'map_screen.dart';
 
