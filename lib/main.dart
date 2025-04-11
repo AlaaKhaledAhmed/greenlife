@@ -64,8 +64,8 @@ class _MyAppState extends State<MyApp> {
       ),
       debugShowCheckedModeBanner: false,
       //home: LoginPage(),
-     //home: MainScreen(firstName: 'firstName', lastName: 'lastName'),
-      home:GoogleMapsScreen(),
+   home: MainScreen(firstName: 'firstName', lastName: 'lastName'),
+   //   home:GoogleMapsScreen(),
 
       routes: {
         '/login': (context) => LoginPage(),
