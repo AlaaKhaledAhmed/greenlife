@@ -62,7 +62,7 @@ class _MyFavoritePlantsState extends State<MyFavoritePlants> {
             }
 
             return ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               itemCount: favoriteDocs.length,
               separatorBuilder: (_, __) => const Divider(),
               itemBuilder: (context, index) {
@@ -70,6 +70,7 @@ class _MyFavoritePlantsState extends State<MyFavoritePlants> {
                 final docId = favoriteDocs[index].id;
 
                 return ListTile(
+                  contentPadding: EdgeInsets.zero,
                   leading: Container(
                     height: 50,
                     width: 50,
@@ -90,7 +91,12 @@ class _MyFavoritePlantsState extends State<MyFavoritePlants> {
                   ),
                   subtitle: Text(data['family']),
                   trailing: IconButton(
-                    icon: const Icon(Icons.favorite, color: Colors.red),
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 30,
+                    ),
                     onPressed: () async {
                       await _removeFromFavorites(docId);
                     },
