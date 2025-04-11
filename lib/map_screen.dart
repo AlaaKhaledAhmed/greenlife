@@ -147,6 +147,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     }
   }
 
+//================================================================================================================================================================
   Future<void> _zoomToFitCircle(LatLng center, double radius) async {
     final southWest = LatLng(center.latitude - radius / 111000,
         center.longitude - radius / (111000 * cos(center.latitude * pi / 180)));
@@ -158,11 +159,13 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 100));
   }
 
+//================================================================================================================================================================
   void _moveToLocation(double lat, double lon) {
     _mapController
         ?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lon), 16));
   }
 
+//================================================================================================================================================================
   void _openInGoogleMaps(double lat, double lon) async {
     final url = "https://www.google.com/maps/search/?api=1&query=$lat,$lon";
     if (await canLaunch(url)) {
@@ -170,6 +173,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     }
   }
 
+//================================================================================================================================================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -211,40 +215,40 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                 //don't show container when complete search
                 if (!(searchRadius >= maxDistance && _nurseries.isNotEmpty))
                   Positioned(
-                  top: 10,
-                  left: 10,
-                  right: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: _nurseries.isEmpty && noNurseriesFound
-                          ? Colors.red
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        )
-                      ],
-                    ),
-                    child: Text(
-                      _nurseries.isEmpty && noNurseriesFound
-                          ? 'لا توجد مشاتل قريبة من موقعك الحالي'
-                          : 'تم البحث في نطاق: ${_circles.isNotEmpty ? min(_circles.first.radius.toInt(), maxDistance.toInt()) : 0} متر من أصل ${maxDistance.toInt()} متر',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                    top: 10,
+                    left: 10,
+                    right: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 16),
+                      decoration: BoxDecoration(
                         color: _nurseries.isEmpty && noNurseriesFound
-                            ? Colors.white
-                            : Colors.black87,
+                            ? Colors.red
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          )
+                        ],
+                      ),
+                      child: Text(
+                        _nurseries.isEmpty && noNurseriesFound
+                            ? 'لا توجد مشاتل قريبة من موقعك الحالي'
+                            : 'تم البحث في نطاق: ${_circles.isNotEmpty ? (min(_circles.first.radius, maxDistance) / 1000).toStringAsFixed(2) : '0'} كم من أصل ${(maxDistance / 1000).toStringAsFixed(2)} كم',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: _nurseries.isEmpty && noNurseriesFound
+                              ? Colors.white
+                              : Colors.black87,
+                        ),
                       ),
                     ),
                   ),
-                ),
 //nurser===========================================================================================
                 Positioned(
                   bottom: 30,

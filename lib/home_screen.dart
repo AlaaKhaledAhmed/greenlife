@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:greenlife/MyFavoritePlants.dart';
 import 'package:greenlife/PlantInMyLocation/PlantInMyLocation.dart';
 import 'package:greenlife/ar/add_measurement.dart';
 import 'package:greenlife/volunteering.dart';
@@ -130,7 +131,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const Spacer(),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyFavoritePlants()));
+
+                },
                 child: Container(
                   height: 70,
                   width: 295,

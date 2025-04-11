@@ -125,7 +125,8 @@ class _PlantsListState extends State<PlantsList> {
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         )
-                      : ListView.separated(
+                      :
+              ListView.separated(
                           itemCount: plantsList.length,
                           separatorBuilder: (context, index) => const Divider(),
                           itemBuilder: (context, index) {

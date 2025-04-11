@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:greenlife/widget/AppText.dart';
+import 'package:greenlife/widget/showDialog.dart';
 
 class PlantsDetails extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -10,6 +13,32 @@ class PlantsDetails extends StatefulWidget {
 }
 
 class _PlantsDetailsState extends State<PlantsDetails> {
+  bool isLoading = false;
+  bool isAlreadySaved = false;
+  @override
+  void initState() {
+    super.initState();
+    checkIfAlreadySaved();
+  }
+
+  Future<void> checkIfAlreadySaved() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('my_plants')
+        .where('scientific_name', isEqualTo: widget.data['scientific_name'])
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      setState(() {
+        isAlreadySaved = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // استخراج البيانات من الـ Firestore
@@ -145,37 +174,40 @@ class _PlantsDetailsState extends State<PlantsDetails> {
 
                 const SizedBox(height: 100),
 
-                // ✅ أزرار الحفظ والمشاركة
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      child: Icon(Icons.camera_alt),
+                SizedBox(
+                  width: double.maxFinite,
+                  child: ElevatedButton(
+
+                    onPressed:
+                        (isAlreadySaved || isLoading) ? null : saveToMyPlants,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 20),
                     ),
-                    const SizedBox(width: 10),
-                    const CircleAvatar(
-                      child: Icon(Icons.share),
-                    ),
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 20),
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.add, color: Colors.white),
-                          SizedBox(width: 5),
-                          Text(
-                            "حفظ إلى نباتاتي",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                                color: Colors.white, strokeWidth: 2),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(isAlreadySaved ? Icons.check : Icons.add,
+                                  color: Colors.white),
+                              const SizedBox(width: 5),
+                              Text(
+                                isAlreadySaved
+                                    ? "مضافة بالفعل"
+                                    : "حفظ إلى نباتاتي",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -183,5 +215,60 @@ class _PlantsDetailsState extends State<PlantsDetails> {
         ),
       ),
     );
+  }
+
+  Future<void> saveToMyPlants() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      showAlert(
+          context: context,
+          title: 'تنبيه',
+          content: 'يجب تسجيل الدخول لحفظ النبات');
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      // تحقق من التكرار
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('my_plants')
+          .where('scientific_name', isEqualTo: widget.data['scientific_name'])
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          isAlreadySaved = true;
+          isLoading = false;
+        });
+        showAlert(
+            context: context,
+            title: 'تنبيه',
+            content: '🌱 هذه النبتة محفوظة بالفعل.');
+
+        return;
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('my_plants')
+          .add(widget.data);
+
+      setState(() {
+        isAlreadySaved = true;
+        isLoading = false;
+      });
+      showAlert(
+          context: context,
+          title: 'تنبيه',
+          content: '✅ تم حفظ النبات في نباتاتي');
+    } catch (e) {
+      setState(() => isLoading = false);
+      showAlert(
+          context: context, title: 'تنبيه', content: '❌ فشل في الحفظ: $e');
+    }
   }
 }
