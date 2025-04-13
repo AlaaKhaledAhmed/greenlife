@@ -14,5 +14,11 @@ class Assets {
   static const String imagesRem = 'assets/images/rem.JPG';
   static const String imagesRem2 = 'assets/images/rem2.JPG';
   static const String imagesRem3 = 'assets/images/rem3.JPG';
+  static const String svgDonation = 'assets/svg/donation.svg';
+  static const String svgDonationSvgrepoCom = 'assets/svg/donation-svgrepo-com.svg';
+  static const String svgGrowth = 'assets/svg/growth.svg';
+  static const String svgPlantLocation = 'assets/svg/plant_location.svg';
+  static const String svgPlantRecords = 'assets/svg/plant_records.svg';
+  static const String svgReminder = 'assets/svg/reminder.svg';
 
 }
