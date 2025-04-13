@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:greenlife/widget/AppSize.dart';
+import 'package:greenlife/widget/AppText.dart';
 import 'package:greenlife/widget/showDialog.dart';
+import 'package:greenlife/widget/utils.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -72,118 +75,120 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       body: Directionality(
         textDirection: TextDirection.ltr,
-        child: Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('images/background.png'),
-                  fit: BoxFit.cover,
-                ),
+        child: Container(
+          width: double.maxFinite,
+          height: double.maxFinite,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                Utils.imagesBack,
               ),
+              fit: BoxFit.cover,
             ),
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    SizedBox(height: 150),
-                    Text(
-                      'الملف الشخصي',
-                      style: TextStyle(
-                        fontSize: 35,
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: Container(
+                    padding: EdgeInsets.only(
+                        bottom: 15,
+                        top: MediaQuery.of(context).padding.top + 10),
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.3),
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                    child: ListTile(
+                      title: AppText(
+                        text: 'الملف الشخصي',
+                        fontSize: AppSize.labelSize,
                         fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 68, 49, 31),
+                        color: Colors.white,
                       ),
-                      textAlign: TextAlign.right,
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Container(
-                        padding: const EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 158, 170, 151),
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color.fromARGB(255, 66, 62, 62),
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
+                    )),
+              ),
+              SizedBox(
+                height: 100,
+              ),
+              Form(
+                key: _formKey,
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 158, 170, 151),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(255, 66, 62, 62),
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildTextFieldWithLabel(
+                              'الإسم الأخير',
+                              TextInputType.name,
+                              _lastNameController,
+                              true,
                             ),
-                          ],
+                          ),
+                          SizedBox(width: 15),
+                          Expanded(
+                            child: buildTextFieldWithLabel(
+                              'الاسم الأول',
+                              TextInputType.name,
+                              _firstNameController,
+                              true,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      buildTextFieldWithLabel('اسم المستخدم',
+                          TextInputType.text, _usernameController, true),
+                      SizedBox(height: 15),
+                      buildTextFieldWithLabel('البريد الإلكتروني',
+                          TextInputType.emailAddress, _emailController, false),
+                      SizedBox(height: 15),
+                      buildPasswordField('كلمة السر'),
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                if (_formKey.currentState!.validate()) {
+                                  await _updateProfile();
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 68, 49, 31),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          minimumSize: Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          textStyle: TextStyle(fontSize: 18),
                         ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: buildTextFieldWithLabel(
-                                    'الإسم الأخير',
-                                    TextInputType.name,
-                                    _lastNameController,
-                                    true,
-                                  ),
-                                ),
-                                SizedBox(width: 15),
-                                Expanded(
-                                  child: buildTextFieldWithLabel(
-                                    'الاسم الأول',
-                                    TextInputType.name,
-                                    _firstNameController,
-                                    true,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 15),
-                            buildTextFieldWithLabel('اسم المستخدم',
-                                TextInputType.text, _usernameController, true),
-                            SizedBox(height: 15),
-                            buildTextFieldWithLabel(
-                                'البريد الإلكتروني',
-                                TextInputType.emailAddress,
-                                _emailController,
-                                false),
-                            SizedBox(height: 15),
-                            buildPasswordField('كلمة السر'),
-                            SizedBox(height: 30),
-                            ElevatedButton(
-                              onPressed: _isLoading
-                                  ? null
-                                  : () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        await _updateProfile();
-                                      }
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 68, 49, 31),
-                                padding: EdgeInsets.symmetric(vertical: 15),
-                                minimumSize: Size(double.infinity, 50),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                textStyle: TextStyle(fontSize: 18),
+                        child: _isLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                                'تحديث الملف الشخصي',
+                                style: TextStyle(color: Colors.white),
                               ),
-                              child: _isLoading
-                                  ? CircularProgressIndicator(
-                                      color: Colors.white)
-                                  : Text(
-                                      'تحديث الملف الشخصي',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                            ),
-                          ],
-                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
